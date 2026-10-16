@@ -9,3 +9,4 @@ Antes de empezar a trabajar:
    git pull origin premaster
 3. Crea rama de feature:
    git checkout -b feature/tu-feature-nombre
+#NO hagas merge directo. Crea una rama nueva, subila y hace un pull request.
