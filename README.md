@@ -1,5 +1,5 @@
 # tp-arquitectura-web-artista
-Trabajo Practico INtgraodr para la materia Arquitectura Web: Portfolio y BIo de Artista Musical
+Trabajo Practico Integrador para la materia Arquitectura Web: Portfolio y BIo de Artista Musical
 
 
 Flujo de Trabajo
