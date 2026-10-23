@@ -1,0 +1,49 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+
+model Album {
+  id  Int   @id @default(autoincrement())
+  titulo  String
+  descripcion String
+  fecha_publicacion DateTime?
+  portada String?
+  canciones Cancion[]
+
+}
+
+
+model Cancion {
+  id          Int      @id @default(autoincrement())
+  titulo      String
+  duracion    Int?
+  enlaceAudio String?
+  albumId     Int?
+  album       Album?   @relation(fields: [albumId], references: [id])
+}
+
+model Biografia {
+  id          Int      @id @default(autoincrement())
+  contenido   String
+  imagen      String?
+  actualizado DateTime @updatedAt
+}
+
+model Concierto {
+  id          Int      @id @default(autoincrement())
+  nombre      String
+  lugar       String
+  fecha       DateTime
+  descripcion String?
+}

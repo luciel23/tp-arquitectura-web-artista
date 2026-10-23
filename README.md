@@ -4,7 +4,7 @@ Trabajo Práctico Integrador de la materia **Arquitectura Web**.
 
 Aplicación web para presentar la trayectoria de un artista musical, su biografía, discografía, canciones y conciertos. El proyecto utiliza Astro para la aplicación web, PostgreSQL como base de datos y Prisma ORM para el acceso a los datos.
 
-## Tecnologías
+## Tecnologías Utilizadas
 
 - **Node.js y npm:** entorno de ejecución y gestión de dependencias.
 - **Astro:** framework de la aplicación web.
@@ -68,7 +68,7 @@ GRANT USAGE, CREATE ON SCHEMA public TO portfolio_user;
 
 Si la base de datos o el usuario ya existen, no es necesario crearlos nuevamente. En ese caso, verificá que el usuario tenga los permisos necesarios.
 
-> **Importante:** la contraseña del ejemplo es un marcador de posición. Reemplazalo por una contraseña propia y no la compartas ni la subas al repositorio.
+> **Importante:** la contraseña del ejemplo es un marcador de posición. Reemplazalo por una contraseña propia y NO la compartas NI la subas al repositorio. Opta por una contraseña facil de recordar.
 
 ### 4. Configurar las variables de entorno
 
@@ -79,8 +79,6 @@ Agregá la siguiente variable y reemplazá `TU_CONTRASEÑA` por la contraseña d
 ```env
 DATABASE_URL="postgresql://portfolio_user:TU_CONTRASEÑA@localhost:5432/portfolio_artista?schema=public"
 ```
-
-Si tu contraseña contiene caracteres especiales, puede ser necesario codificarlos para incluirlos en la URL de conexión.
 
 El archivo `.env` contiene credenciales privadas: **no debe subirse a Git ni compartirse públicamente**.
 
@@ -138,90 +136,6 @@ npm run preview
 - `npm run build`: genera la compilación de producción.
 - `npm run preview`: permite previsualizar la compilación localmente.
 
-## API de álbumes
-
-Actualmente, el proyecto incluye el endpoint `/api/albums`.
-
-### Obtener todos los álbumes
-
-**Método:** `GET`
-
-```http
-http://localhost:4321/api/albums
-```
-
-Devuelve un arreglo JSON con los álbumes registrados en la base de datos.
-
-### Crear un álbum
-
-**Método:** `POST`
-
-```http
-http://localhost:4321/api/albums
-```
-
-Enviá un cuerpo JSON con el título y la descripción obligatorios. La fecha de publicación y la portada son opcionales.
-
-Ejemplo:
-
-```json
-{
-  "titulo": "Ecos de la noche",
-  "descripcion": "Álbum de ejemplo",
-  "fecha_publicacion": "2025-06-15T00:00:00.000Z",
-  "portada": "https://ejemplo.com/portada.jpg"
-}
-```
-
-Podés probar estos endpoints con Thunder Client, Postman o `curl`.
-
-Ejemplo para consultar los álbumes:
-
-```bash
-curl http://localhost:4321/api/albums
-```
-
-Ejemplo para crear un álbum:
-
-```bash
-curl -X POST http://localhost:4321/api/albums \
-  -H "Content-Type: application/json" \
-  -d '{"titulo":"Ecos de la noche","descripcion":"Álbum de ejemplo"}'
-```
-
-El endpoint de creación responde con estado `201` cuando el álbum se crea correctamente. Los errores de validación responden con estado `400`.
-
-## Estructura del backend
-
-```text
-prisma/
-  schema.prisma
-  migrations/
-
-scripts/
-  probar-db.js
-
-src/
-  lib/
-    prisma.js
-  pages/
-    api/
-      albums.js
-  repositories/
-    albumRepository.js
-  services/
-    albumService.js
-```
-
-Responsabilidades principales:
-
-- **`prisma/schema.prisma`:** define los modelos de datos.
-- **`prisma/migrations/`:** contiene las migraciones de la base de datos.
-- **`src/lib/prisma.js`:** configura la conexión con PostgreSQL mediante Prisma.
-- **`src/repositories/`:** contiene las operaciones de acceso a los datos.
-- **`src/services/`:** contiene la lógica de negocio y las validaciones.
-- **`src/pages/api/`:** define los endpoints HTTP de la API.
-- **`scripts/`:** contiene herramientas de prueba y diagnóstico.
 
 ## Flujo de trabajo con Git
 
@@ -235,16 +149,9 @@ git pull origin premaster
 ```
 
 ### 2. Crear una rama para tu funcionalidad
-
-```bash
-git switch -c feature/nombre-de-la-funcionalidad
-```
-
 Usá un nombre descriptivo, por ejemplo:
 
 - `feature/biografia`
-- `feature/conciertos`
-- `feature/canciones`
 
 ### 3. Guardar y subir los cambios
 
@@ -262,7 +169,7 @@ Desde GitHub, creá un Pull Request desde tu rama de funcionalidad hacia `premas
 
 El equipo debe revisar los cambios antes de integrarlos. No hagas un merge directo a `premaster` sin seguir el procedimiento acordado.
 
-## Consideraciones importantes
+## CONSIDERACIONES IMPORTANTES
 
 - Cada integrante debe configurar su propio archivo `.env`.
 - No se debe subir `.env`, contraseñas ni otras credenciales al repositorio.
