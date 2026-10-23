@@ -35,6 +35,7 @@ psql --version
 
 ```bash
 git clone https://github.com/luciel23/tp-arquitectura-web-artista.git
+cd tp-arquitectura-web-artista
 ```
 
 ### 2. Instalar las dependencias
