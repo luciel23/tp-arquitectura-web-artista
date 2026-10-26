@@ -1,4 +1,4 @@
-# ADR-002 – Gestión de cambios en la base de datos mediante migraciones de Prisma
+# ADR-006 – Gestión de cambios en la base de datos mediante migraciones de Prisma
 
 ## Contexto
 El proyecto utiliza PostgreSQL como base de datos y Prisma como ORM para acceder a los datos. Durante el desarrollo se pueden modificar tablas, campos y relaciones mientras va evolucionando.
