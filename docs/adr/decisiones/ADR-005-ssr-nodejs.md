@@ -1,5 +1,5 @@
 
-# ADR-002 – Renderizado en servidor y adaptador de Node.js
+# ADR-005 – Renderizado en servidor y adaptador de Node.js
 
 ## Contexto
 La aplicación debe ejecutar código del servidor para responder las solicitudes a la API y conectarse a PostgreSQL.
