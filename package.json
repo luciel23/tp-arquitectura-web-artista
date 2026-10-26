@@ -12,12 +12,14 @@
     "astro": "astro"
   },
   "dependencies": {
+    "@astrojs/check": "^0.9.12",
     "@astrojs/node": "^11.1.9",
     "@prisma/adapter-pg": "^7.10.1",
     "@prisma/client": "^7.10.1",
     "astro": "^7.4.1",
     "dotenv": "^18.0.8",
-    "pg": "^8.23.1"
+    "pg": "^8.23.1",
+    "typescript": "^6.0.3"
   },
   "devDependencies": {
     "prisma": "^7.10.1"

@@ -1,0 +1,34 @@
+
+---
+import "../styles/global.css";
+import Header from "../components/layouts/Header.astro";
+import Footer from "../components/layouts/Footer.astro";
+
+const {
+  title = "Muse — Universo musical",
+  description = "Explorá la historia, la discografía y la música de Muse."
+} = Astro.props;
+---
+
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content={description} />
+    <meta name="theme-color" content="#f7f6f2" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <title>{title}</title>
+  </head>
+
+  <body>
+    <Header />
+
+    <main>
+      <slot />
+    </main>
+
+    <Footer />
+  </body>
+</html>
+
