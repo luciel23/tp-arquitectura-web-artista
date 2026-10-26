@@ -1,4 +1,4 @@
-# ADR-002 – Prisma como ORM
+# ADR-003 – Prisma como ORM
 
 ## Contexto
 El backend necesita consultar y modificar PostgreSQL desde JavaScript sin escribir manualmente todas las consultas SQL.
