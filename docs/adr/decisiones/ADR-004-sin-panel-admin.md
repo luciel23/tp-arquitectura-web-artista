@@ -1,6 +1,6 @@
 
 
-# ADR-002 – Ausencia de panel de administración.
+# ADR-004 – Ausencia de panel de administración.
 
 ## Contexto
 El alcance del proyecto es presentar el portfolio público de la banda, sin una interfaz privada para administrar su contenido.
