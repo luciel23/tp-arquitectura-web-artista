@@ -1,16 +1,142 @@
+
 ---
+import MainLayout from "../layouts/MainLayout.astro";
+
+const albums = [
+  {
+    name: "Absolution",
+    year: "2003",
+    description: "Un álbum intenso que consolidó el sonido épico de Muse."
+  },
+  {
+    name: "Black Holes and Revelations",
+    year: "2006",
+    description: "Rock alternativo, electrónica y exploración sonora."
+  },
+  {
+    name: "The Resistance",
+    year: "2009",
+    description: "Una propuesta ambiciosa con influencias sinfónicas."
+  }
+];
 ---
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<h1>Astro</h1>
-	</body>
-</html>
+<MainLayout
+  title="Muse — Universo musical"
+  description="Explorá la historia, la discografía y el universo musical de Muse."
+>
+  <section class="hero" id="inicio">
+    <div class="container hero-content">
+      <p class="hero-kicker">Una experiencia para fans</p>
+      <h1>MUSE<span>UNIVERSE</span></h1>
+      <p class="hero-description">
+        Explorá la música, la historia y el universo creativo de una de las
+        bandas más reconocidas del rock alternativo.
+      </p>
+
+      <div class="hero-actions">
+        <a class="button" href="#discografia">EXPLORAR DISCOS</a>
+        <a class="button button-secondary" href="#historia">CONOCER LA BANDA</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section container" id="discografia">
+    <span class="section-label">El sonido de Muse</span>
+    <h2 class="section-title">Discografía destacada</h2>
+    <p class="section-description">
+      Descubrí distintas etapas de la evolución musical de la banda, desde
+      sus primeros trabajos hasta sus producciones más ambiciosas.
+    </p>
+
+    <div class="card-grid">
+      {albums.map((album) => (
+        <article class="content-card">
+          <div class="card-art" aria-label={`Arte provisional de ${album.name}`}>
+            MUSE
+          </div>
+          <div class="card-body">
+            <h3>{album.name}</h3>
+            <p>{album.year}</p>
+            <p>{album.description}</p>
+          </div>
+        </article>
+      ))}
+    </div>
+  </section>
+
+  <section class="section section-dark" id="musica">
+    <div class="container">
+      <span class="section-label">Escuchá y descubrí</span>
+      <h2 class="section-title">El universo sonoro</h2>
+      <p class="section-description">
+        Un espacio dedicado a las canciones, los álbumes y los sonidos que
+        definen la identidad musical de Muse.
+      </p>
+      <p class="section-description">
+        Próximamente: reproductor musical con selección de canciones.
+      </p>
+    </div>
+  </section>
+
+  <section class="section container" id="historia">
+    <div class="history-layout">
+      <div>
+        <span class="section-label">Desde sus comienzos</span>
+        <h2 class="section-title">Una historia de evolución</h2>
+        <p class="section-description">
+          Muse es una banda británica formada en Teignmouth, Devon, en 1994.
+          Su propuesta combina rock alternativo con elementos electrónicos,
+          música clásica y sonidos experimentales.
+        </p>
+
+        <div class="timeline">
+          <div class="timeline-item">
+            <strong>1994 · Los comienzos</strong>
+            <p>Se consolida la formación de la banda.</p>
+          </div>
+          <div class="timeline-item">
+            <strong>2001 · Origin of Symmetry</strong>
+            <p>El grupo amplía su identidad sonora y su alcance.</p>
+          </div>
+          <div class="timeline-item">
+            <strong>2006 · Black Holes and Revelations</strong>
+            <p>Una etapa clave en su proyección internacional.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="history-visual" aria-hidden="true">M</div>
+    </div>
+  </section>
+
+  <section class="section section-dark" id="conciertos">
+    <div class="container">
+      <span class="section-label">En vivo</span>
+      <h2 class="section-title">Conciertos y giras</h2>
+      <p class="section-description">
+        Un espacio para consultar próximas presentaciones, fechas y lugares.
+        Los eventos se conectarán con los datos reales del proyecto.
+      </p>
+
+      <div class="concert-list">
+        <article class="concert-item">
+          <div>
+            <h3>Próximas presentaciones</h3>
+            <p>Las fechas se mostrarán cuando estén disponibles en el sistema.</p>
+          </div>
+          <a class="button button-secondary" href="#contacto">MÁS INFORMACIÓN</a>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="section container" id="contacto">
+    <span class="section-label">Seguí explorando</span>
+    <h2 class="section-title">El viaje continúa</h2>
+    <p class="section-description">
+      Este proyecto reúne información sobre la música, la historia y la
+      actividad de Muse en una experiencia web.
+    </p>
+  </section>
+</MainLayout>
