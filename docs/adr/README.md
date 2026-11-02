@@ -18,5 +18,5 @@ Este directorio contiene las decisiones arquitectónicas del proyecto Portfolio 
 - [ADR-006 – Uso de migraciones con Prisma](decisiones/ADR-006-migraciones.md)
 - [ADR-007 – Distribución de recursos estáticos mediante CDN](decisiones/ADR-007-cnd.md)
 - [ADR-008 - ImportacionDatosCmv](decisiones/ADR-008-ImportacionDatosCmv.md)
-- [ADR-009 - DespliegeDocker](decisiones/ADR-009-DespliegueDocker.md)
+- [ADR-009 - DespliegueDocker](decisiones/ADR-009-DespliegueDocker.md)
 
