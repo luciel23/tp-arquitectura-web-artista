@@ -1,0 +1,57 @@
+
+---
+import AlbumCard from "../cards/AlbumCard.astro";
+import SectionTitle from "../ui/SectionTitle.astro";
+
+const albums = [
+  {
+    name: "Absolution",
+    year: 2003,
+    image: "/images/absolution.jpg",
+    description: "Un álbum intenso que consolidó el sonido épico de Muse."
+  },
+  {
+    name: "Black Holes and Revelations",
+    year: 2006,
+    image: "/images/black-holes.jpg",
+    description: "Una combinación de rock alternativo y sonidos electrónicos."
+  },
+  {
+    name: "The Resistance",
+    year: 2009,
+    image: "/images/the-resistance.jpg",
+    description: "Una propuesta musical ambiciosa y experimental."
+  }
+];
+---
+
+<section class="section container" id="discografia">
+
+  <SectionTitle
+    eyebrow="El sonido de Muse"
+    title="Discografía destacada"
+    description="Explorá algunos de los álbumes más importantes de la banda."
+  />
+
+  <div class="albums-grid">
+    {albums.map((album) => (
+      <AlbumCard {...album} />
+    ))}
+  </div>
+
+</section>
+
+<style>
+  .albums-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 22px;
+    margin-top: 36px;
+  }
+
+  @media (max-width: 760px) {
+    .albums-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

@@ -1,24 +1,7 @@
 
 ---
 import MainLayout from "../layouts/MainLayout.astro";
-
-const albums = [
-  {
-    name: "Absolution",
-    year: "2003",
-    description: "Un álbum intenso que consolidó el sonido épico de Muse."
-  },
-  {
-    name: "Black Holes and Revelations",
-    year: "2006",
-    description: "Rock alternativo, electrónica y exploración sonora."
-  },
-  {
-    name: "The Resistance",
-    year: "2009",
-    description: "Una propuesta ambiciosa con influencias sinfónicas."
-  }
-];
+import FeaturedAlbums from "../components/sections/FeaturedAlbums.astro";
 ---
 
 <MainLayout
@@ -41,29 +24,7 @@ const albums = [
     </div>
   </section>
 
-  <section class="section container" id="discografia">
-    <span class="section-label">El sonido de Muse</span>
-    <h2 class="section-title">Discografía destacada</h2>
-    <p class="section-description">
-      Descubrí distintas etapas de la evolución musical de la banda, desde
-      sus primeros trabajos hasta sus producciones más ambiciosas.
-    </p>
-
-    <div class="card-grid">
-      {albums.map((album) => (
-        <article class="content-card">
-          <div class="card-art" aria-label={`Arte provisional de ${album.name}`}>
-            MUSE
-          </div>
-          <div class="card-body">
-            <h3>{album.name}</h3>
-            <p>{album.year}</p>
-            <p>{album.description}</p>
-          </div>
-        </article>
-      ))}
-    </div>
-  </section>
+  <FeaturedAlbums />
 
   <section class="section section-dark" id="musica">
     <div class="container">
