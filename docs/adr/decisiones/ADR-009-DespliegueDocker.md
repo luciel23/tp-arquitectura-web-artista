@@ -1,4 +1,4 @@
-# ADR-009 – DespliegeDocker
+# ADR-009 – DespliegueDocker
 
 ## Contexto
 El proyecto para ejecutarse necesita poder ser ejecutado en cualquier entorno de forma facil como si estuviera enpaquetada con todo y sus dependencias.
