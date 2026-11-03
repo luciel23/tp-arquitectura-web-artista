@@ -25,6 +25,14 @@ const archivos = {
     nombre: "conciertos.csv",
     columnas: ["nombre", "lugar", "fecha", "descripcion"],
   },
+  productos: {
+    nombre: "productos.csv",
+    columnas: ["nombre", "descripcion", "precio", "imagen", "categoria"],
+  },
+  multimedia: {
+    nombre: "multimedia.csv",
+    columnas: ["titulo", "descripcion", "url", "tipo"],
+  },
 };
 
 function leerCSV(nombre, columnasEsperadas) {
@@ -57,25 +65,26 @@ function leerCSV(nombre, columnasEsperadas) {
       );
     }
   }
+const columnasOpcionales = new Set([
+  "descripcion",
+  "fecha_publicacion",
+  "portada",
+  "imagen",
+  "duracion",
+  "enlaceAudio",
+  "precio",
+  "categoria",
+]);
 
-  for (const [indice, fila] of filas.entries()) {
-    for (const columna of columnasEsperadas) {
-      if (
-        !columna.endsWith("Audio") &&
-        columna !== "portada" &&
-        columna !== "imagen" &&
-        columna !== "descripcion" &&
-        columna !== "fecha_publicacion" &&
-        columna !== "duracion" &&
-        !fila[columna]
-      ) {
-        throw new Error(
-          `${nombre}: falta "${columna}" en la fila ${indice + 2}.`
-        );
-      }
+for (const [indice, fila] of filas.entries()) {
+  for (const columna of columnasEsperadas) {
+    if (!columnasOpcionales.has(columna) && !fila[columna]) {
+      throw new Error(
+        `${nombre}: falta "${columna}" en la fila ${indice + 2}.`
+      );
     }
   }
-
+}
   console.log(`✅ ${nombre}: ${filas.length} fila(s) leída(s).`);
   return filas;
 }
@@ -124,6 +133,36 @@ function duracionOpcional(valor) {
   return duracion;
 }
 
+function precioOpcional(valor) {
+  if (!valor) return null;
+
+  if (!/^\d+(\.\d{1,2})?$/.test(valor)) {
+    throw new Error(
+      `Precio inválido: "${valor}". Usá un número con hasta dos decimales.`
+    );
+  }
+
+  const precio = Number(valor);
+
+  if (!Number.isFinite(precio) || precio > 99999999.99) {
+    throw new Error(`Precio fuera de rango: "${valor}".`);
+  }
+
+  return valor;
+}
+
+function validarTipoMultimedia(valor) {
+  const tipo = valor.toUpperCase();
+
+  if (!["IMAGEN", "VIDEO"].includes(tipo)) {
+    throw new Error(
+      `Tipo de multimedia inválido: "${valor}". Usá IMAGEN o VIDEO.`
+    );
+  }
+
+  return tipo;
+}
+
 function comprobarDuplicados(filas, clave, archivo) {
   const vistos = new Set();
 
@@ -164,6 +203,8 @@ async function importar() {
   const canciones = datos.canciones ?? [];
   const biografias = datos.biografia ?? [];
   const conciertos = datos.conciertos ?? [];
+  const productos = datos.productos ?? [];
+  const multimedia = datos.multimedia ?? [];
 
   if (biografias.length > 1) {
     throw new Error(
@@ -188,6 +229,18 @@ async function importar() {
     conciertos,
     (fila) => `${fila.nombre.toLowerCase()}|${fila.fecha}|${fila.lugar.toLowerCase()}`,
     "conciertos.csv"
+  );
+
+  comprobarDuplicados(
+    productos,
+    (fila) => fila.nombre.toLowerCase(),
+    "productos.csv"
+  );
+
+  comprobarDuplicados(
+    multimedia,
+    (fila) => `${fila.titulo.toLowerCase()}|${fila.url}|${fila.tipo}`,
+    "multimedia.csv"
   );
 
   // Validar los datos antes de escribir en la base.
@@ -257,6 +310,17 @@ async function importar() {
     }
   }
 
+  for (const producto of productos) {
+    precioOpcional(producto.precio);
+    urlOpcional(producto.imagen, "imagen");
+  }
+
+for (const elemento of multimedia) {
+    urlOpcional(elemento.url, "url");
+    validarTipoMultimedia(elemento.tipo);
+  }
+
+
   const biografiaExistente = biografias.length
     ? await prisma.biografia.findFirst()
     : null;
@@ -266,7 +330,8 @@ async function importar() {
   console.log(`- Canciones: ${canciones.length}`);
   console.log(`- Biografía: ${biografias.length}`);
   console.log(`- Conciertos: ${conciertos.length}`);
-
+  console.log(`- Productos: ${productos.length}`);
+  console.log(`- Multimedia: ${multimedia.length}`);
   if (!aplicar) {
     console.log(
       "\n🧪 SIMULACIÓN: no se modificó la base de datos."
@@ -392,6 +457,57 @@ async function importar() {
         console.log(`⏭️ Concierto existente: ${concierto.nombre}`);
       }
     }
+    for (const producto of productos) {
+      const existente = await tx.producto.findFirst({
+        where: {
+          nombre: producto.nombre,
+        },
+      });
+
+      if (!existente) {
+        await tx.producto.create({
+          data: {
+            nombre: producto.nombre,
+            descripcion: producto.descripcion || null,
+            precio: precioOpcional(producto.precio),
+            imagen: urlOpcional(producto.imagen, "imagen"),
+            categoria: producto.categoria || null,
+          },
+        });
+
+    console.log(`➕ Producto importado: ${producto.nombre}`);
+  } else {
+    console.log(`⏭️ Producto existente: ${producto.nombre}`);
+  }
+}
+
+for (const elemento of multimedia) {
+  const tipo = validarTipoMultimedia(elemento.tipo);
+
+  const existente = await tx.multimedia.findFirst({
+    where: {
+      titulo: elemento.titulo,
+      url: elemento.url,
+      tipo,
+    },
+  });
+
+  if (!existente) {
+    await tx.multimedia.create({
+      data: {
+        titulo: elemento.titulo,
+        descripcion: elemento.descripcion || null,
+        url: elemento.url,
+        tipo,
+      },
+    });
+
+    console.log(`➕ Multimedia importada: ${elemento.titulo}`);
+  } else {
+    console.log(`⏭️ Multimedia existente: ${elemento.titulo}`);
+  }
+}
+
   });
 
   console.log("\n✅ Importación finalizada.");
