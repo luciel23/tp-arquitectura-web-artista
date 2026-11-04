@@ -1,0 +1,285 @@
+
+---
+const backendUrl = "http://localhost:4321";
+
+type Cancion = {
+  id: number;
+  titulo: string;
+  duracion: number | null;
+  enlaceAudio: string | null;
+  albumId: number | null;
+};
+
+type Album = {
+  id: number;
+  titulo: string;
+};
+
+let canciones: Cancion[] = [];
+let albumes: Album[] = [];
+let errorCarga = false;
+
+try {
+  const response = await fetch(`${backendUrl}/api/canciones`);
+
+  if (!response.ok) {
+    throw new Error("Error al obtener canciones");
+  }
+
+  canciones = await response.json();
+
+  const albumsResponse = await fetch(`${backendUrl}/api/albums`);
+
+  if (albumsResponse.ok) {
+    albumes = await albumsResponse.json();
+  }
+} catch (error) {
+  console.error("Error al conectar con el backend:", error);
+  errorCarga = true;
+}
+
+const albumesPorId = new Map(
+  albumes.map((album) => [album.id, album])
+);
+---
+
+<section class="section section-dark music-section" id="musica">
+  <div class="container">
+    <span class="section-label">Escuchá y descubrí</span>
+    <h2 class="section-title">El universo sonoro</h2>
+
+    <p class="section-description">
+      Explorá las canciones y los sonidos que definen la identidad musical de Muse.
+    </p>
+
+    {errorCarga ? (
+      <p class="player-message">
+        No se pudieron cargar las canciones. Intentá nuevamente más tarde.
+      </p>
+    ) : canciones.length === 0 ? (
+      <p class="player-message">
+        Todavía no hay canciones disponibles.
+      </p>
+    ) : (
+      <div class="music-player">
+        <div class="player-current">
+          <span class="section-label">REPRODUCIENDO</span>
+          <h3 id="current-song">Seleccioná una canción</h3>
+          <p id="current-album">Muse Universe</p>
+
+          <audio id="audio-player" controls preload="metadata">
+            Tu navegador no admite la reproducción de audio.
+          </audio>
+        </div>
+
+        <div class="playlist-container">
+          <div class="playlist-header">
+            <h3>Lista de canciones</h3>
+            <span>{canciones.length} canciones</span>
+          </div>
+
+          <div class="playlist">
+            {canciones.map((cancion, index) => {
+              const album = albumesPorId.get(cancion.albumId ?? -1);
+
+              return (
+                <div class="playlist-item">
+                  <span class="track-number">
+                    {String(index + 1).padStart(2, "0")}
+                  </span>
+
+                  <div class="track-info">
+                    <strong>{cancion.titulo}</strong>
+                    <span>{album?.titulo ?? "Muse"}</span>
+                  </div>
+
+                  {cancion.enlaceAudio ? (
+                    <button
+                      class="play-track"
+                      type="button"
+                      data-audio-url={cancion.enlaceAudio}
+                      data-song-title={cancion.titulo}
+                      data-album-title={album?.titulo ?? "Muse"}
+                      aria-label={`Reproducir ${cancion.titulo}`}
+                    >
+                      ▶
+                    </button>
+                  ) : (
+                    <span
+                      class="track-unavailable"
+                      title="Audio no disponible"
+                    >
+                      —
+                    </span>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </div>
+    )}
+  </div>
+</section>
+
+<script>
+  const audioPlayer =
+    document.querySelector<HTMLAudioElement>("#audio-player");
+
+  const currentSong =
+    document.querySelector<HTMLElement>("#current-song");
+
+  const currentAlbum =
+    document.querySelector<HTMLElement>("#current-album");
+
+  const trackButtons =
+    document.querySelectorAll<HTMLButtonElement>(".play-track");
+
+  if (audioPlayer && currentSong && currentAlbum) {
+    trackButtons.forEach((button) => {
+      button.addEventListener("click", async () => {
+        const audioUrl = button.dataset.audioUrl;
+        const songTitle = button.dataset.songTitle;
+        const albumTitle = button.dataset.albumTitle;
+
+        if (!audioUrl) return;
+
+        const requestedUrl = new URL(
+          audioUrl,
+          window.location.href
+        ).href;
+
+        if (
+          audioPlayer.src === requestedUrl &&
+          !audioPlayer.paused
+        ) {
+          audioPlayer.pause();
+          return;
+        }
+
+        if (audioPlayer.src !== requestedUrl) {
+          audioPlayer.src = requestedUrl;
+        }
+
+        currentSong.textContent = songTitle ?? "Canción seleccionada";
+        currentAlbum.textContent = albumTitle ?? "Muse";
+
+        try {
+          await audioPlayer.play();
+        } catch (error) {
+          console.error("Error al reproducir el audio:", error);
+        }
+      });
+    });
+  }
+</script>
+
+<style>
+  .music-player {
+    margin-top: 3rem;
+    display: grid;
+    grid-template-columns: 0.8fr 1.2fr;
+    gap: 2rem;
+  }
+
+  .player-current {
+    padding: 2rem;
+    background: linear-gradient(145deg, #101b2d, #141414);
+    border: 1px solid rgb(141 169 204 / 20%);
+    border-radius: 12px;
+    align-self: start;
+  }
+
+  .player-current h3 {
+    margin: 1rem 0 0.5rem;
+    font-size: 1.6rem;
+  }
+
+  .player-current p {
+    color: var(--color-muted);
+    margin-bottom: 2rem;
+  }
+
+  .player-current audio {
+    width: 100%;
+  }
+
+  .playlist-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+  }
+
+  .playlist-header span {
+    color: var(--color-muted);
+    font-size: 0.85rem;
+  }
+
+  .playlist {
+    max-height: 480px;
+    overflow-y: auto;
+    border-top: 1px solid rgb(255 255 255 / 10%);
+  }
+
+  .playlist-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem 0.5rem;
+    border-bottom: 1px solid rgb(255 255 255 / 8%);
+  }
+
+  .track-number {
+    color: var(--color-muted);
+    font-size: 0.85rem;
+  }
+
+  .track-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+  }
+
+  .track-info strong {
+    font-size: 0.95rem;
+  }
+
+  .track-info span {
+    color: var(--color-muted);
+    font-size: 0.8rem;
+  }
+
+  .play-track {
+    width: 36px;
+    height: 36px;
+    border: 1px solid var(--color-accent);
+    border-radius: 50%;
+    background: transparent;
+    color: white;
+    cursor: pointer;
+    transition: background 0.2s ease;
+  }
+
+  .play-track:hover {
+    background: var(--color-accent);
+  }
+
+  .track-unavailable {
+    color: var(--color-muted);
+    padding: 0 0.8rem;
+  }
+
+  .player-message {
+    margin-top: 2rem;
+    color: var(--color-muted);
+  }
+
+  @media (max-width: 768px) {
+    .music-player {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

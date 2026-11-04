@@ -1,0 +1,242 @@
+
+---
+interface Concierto {
+  id: number;
+  nombre: string;
+  lugar: string;
+  fecha: string;
+  descripcion: string;
+}
+
+let conciertos: Concierto[] = [];
+let error = false;
+
+try {
+  const response = await fetch('http://localhost:4321/api/conciertos');
+
+  if (!response.ok) {
+    throw new Error('No se pudieron obtener los conciertos');
+  }
+
+  conciertos = await response.json();
+
+  conciertos.sort(
+    (a, b) =>
+      new Date(a.fecha).getTime() - new Date(b.fecha).getTime()
+  );
+} catch (e) {
+  console.error('Error al cargar conciertos:', e);
+  error = true;
+}
+
+function formatearFecha(fecha: string) {
+  return new Date(fecha).toLocaleDateString('es-AR', {
+    day: '2-digit',
+    month: 'long',
+    year: 'numeric',
+    timeZone: 'UTC',
+  });
+}
+---
+
+<section class="concerts-section" id="conciertos">
+  <div class="concerts-container">
+
+    <div class="section-heading">
+      <span class="section-eyebrow">EN VIVO</span>
+      <h2>Próximos conciertos</h2>
+      <p>
+        Muse vuelve a los escenarios. Descubrí las próximas fechas
+        y seguí cada parada de su gira.
+      </p>
+    </div>
+
+    {error ? (
+      <p class="concerts-message">
+        No pudimos cargar los conciertos. Intentá nuevamente más tarde.
+      </p>
+    ) : conciertos.length > 0 ? (
+      <div class="concerts-list">
+        {conciertos.map((concierto) => (
+          <article class="concert-card">
+            <div class="concert-date">
+              <span class="date-day">
+                {new Date(concierto.fecha).toLocaleDateString('es-AR', {
+                  day: '2-digit',
+                  timeZone: 'UTC',
+                })}
+              </span>
+
+              <span class="date-month">
+                {new Date(concierto.fecha).toLocaleDateString('es-AR', {
+                  month: 'short',
+                  timeZone: 'UTC',
+                }).replace('.', '')}
+              </span>
+            </div>
+
+            <div class="concert-info">
+              <h3>{concierto.nombre}</h3>
+              <p class="concert-location">
+                <span aria-hidden="true">⌖</span>
+                {concierto.lugar}
+              </p>
+              <p class="concert-description">
+                {concierto.descripcion}
+              </p>
+            </div>
+
+            <div class="concert-year">
+              {new Date(concierto.fecha).toLocaleDateString('es-AR', {
+                year: 'numeric',
+                timeZone: 'UTC',
+              })}
+            </div>
+          </article>
+        ))}
+      </div>
+    ) : (
+      <p class="concerts-message">
+        No hay conciertos disponibles por el momento.
+      </p>
+    )}
+
+    <div class="concerts-footer">
+      <span>{conciertos.length} FECHAS REGISTRADAS</span>
+    </div>
+
+  </div>
+</section>
+
+<style>
+  .concerts-section {
+    padding: 100px 24px;
+    background: #090909;
+    color: #f5f5f5;
+  }
+
+  .concerts-container {
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .section-heading {
+    max-width: 650px;
+    margin-bottom: 55px;
+  }
+
+  .section-eyebrow {
+    color: #e31b23;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 3px;
+  }
+
+  .section-heading h2 {
+    margin: 16px 0;
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    font-weight: 700;
+  }
+
+  .section-heading p {
+    color: #a3a3a3;
+    line-height: 1.7;
+  }
+
+  .concerts-list {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .concert-card {
+    display: grid;
+    grid-template-columns: 90px 1fr auto;
+    align-items: center;
+    gap: 28px;
+    padding: 28px 18px;
+    border-bottom: 1px solid rgb(141 169 204 / 18%);
+    transition: background 0.3s ease;
+  }
+
+  .concert-card:hover {
+    background: #141414;
+  }
+
+  .concert-date {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border-right: 1px solid rgb(227 27 35 / 60%);
+    padding-right: 20px;
+  }
+
+  .date-day {
+    font-size: 2rem;
+    font-weight: 700;
+  }
+
+  .date-month {
+    color: #e31b23;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+  }
+
+  .concert-info h3 {
+    margin: 0 0 10px;
+    font-size: 1.1rem;
+  }
+
+  .concert-location {
+    margin: 0 0 8px;
+    color: #8da9cc;
+    font-size: 0.9rem;
+  }
+
+  .concert-description {
+    margin: 0;
+    color: #a3a3a3;
+    font-size: 0.85rem;
+  }
+
+  .concert-year {
+    color: #737373;
+    font-size: 0.9rem;
+  }
+
+  .concerts-footer {
+    margin-top: 30px;
+    color: #737373;
+    font-size: 0.75rem;
+    letter-spacing: 2px;
+    text-align: right;
+  }
+
+  .concerts-message {
+    color: #a3a3a3;
+    padding: 30px 0;
+  }
+
+  @media (max-width: 650px) {
+    .concerts-section {
+      padding: 70px 20px;
+    }
+
+    .concert-card {
+      grid-template-columns: 65px 1fr;
+      gap: 18px;
+      padding: 24px 8px;
+    }
+
+    .concert-year {
+      display: none;
+    }
+
+    .date-day {
+      font-size: 1.6rem;
+    }
+
+    .concert-info h3 {
+      font-size: 0.95rem;
+    }
+  }
+</style>

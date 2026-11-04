@@ -1,0 +1,202 @@
+
+---
+const secciones = [
+  { nombre: 'Inicio', id: 'inicio' },
+  { nombre: 'Discografía', id: 'discografia' },
+  { nombre: 'Música', id: 'musica' },
+  { nombre: 'Biografía', id: 'biografia' },
+  { nombre: 'Historia', id: 'historia' },
+  { nombre: 'Conciertos', id: 'conciertos' },
+  { nombre: 'Galería', id: 'galeria' },
+  { nombre: 'Tienda', id: 'merchandising' },
+  { nombre: 'Novedades', id: 'novedades' },
+  { nombre: 'Comunidad', id: 'comunidad' },
+  { nombre: 'Contacto', id: 'contacto' }
+];
+---
+
+<header class="site-header">
+  <div class="header-container">
+    <a href="/#inicio" class="brand" aria-label="Muse - Inicio">
+      <span class="brand-name">MUSE</span>
+      <span class="brand-subtitle">UNIVERSO MUSICAL</span>
+    </a>
+
+    <nav class="main-navigation" aria-label="Navegación principal">
+      {secciones.map((seccion) => (
+        <a
+          href={`/#${seccion.id}`}
+          class:list={[
+            'nav-link',
+            { 'nav-link-home': seccion.id === 'inicio' }
+          ]}
+        >
+          {seccion.nombre}
+        </a>
+      ))}
+    </nav>
+
+    <a href="/#musica" class="listen-button">
+      <span aria-hidden="true">▶</span>
+      Escuchar
+    </a>
+  </div>
+</header>
+
+<style>
+  .site-header {
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    width: 100%;
+    background: rgba(9, 9, 9, 0.96);
+    backdrop-filter: blur(16px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.09);
+  }
+
+  .header-container {
+    max-width: 1500px;
+    min-height: 76px;
+    padding: 0 4%;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    gap: 28px;
+  }
+
+  .brand {
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0;
+    gap: 3px;
+    color: #f5f5f5;
+    text-decoration: none;
+  }
+
+  .brand-name {
+    font-size: 1.8rem;
+    line-height: 1;
+    font-weight: 900;
+    letter-spacing: 4px;
+  }
+
+  .brand-subtitle {
+    color: #8da9cc;
+    font-size: 0.52rem;
+    letter-spacing: 2px;
+    font-weight: 600;
+  }
+
+  .main-navigation {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: clamp(10px, 1.35vw, 20px);
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+
+  .main-navigation::-webkit-scrollbar {
+    display: none;
+  }
+
+  .nav-link {
+    position: relative;
+    flex-shrink: 0;
+    padding: 28px 0;
+    color: #a3a3a3;
+    text-decoration: none;
+    font-size: 0.72rem;
+    font-weight: 600;
+    white-space: nowrap;
+    transition: color 0.2s ease;
+  }
+
+  .nav-link::after {
+    content: '';
+    position: absolute;
+    bottom: 18px;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: #e31b23;
+    transition: width 0.2s ease;
+  }
+
+  .nav-link:hover,
+  .nav-link-home {
+    color: #f5f5f5;
+  }
+
+  .nav-link:hover::after {
+    width: 100%;
+  }
+
+  .listen-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    gap: 9px;
+    padding: 10px 16px;
+    border: 1px solid #e31b23;
+    border-radius: 4px;
+    background: #e31b23;
+    color: #fff;
+    text-decoration: none;
+    font-size: 0.8rem;
+    font-weight: 700;
+    transition: background 0.2s ease;
+  }
+
+  .listen-button:hover {
+    background: #bd151c;
+  }
+
+  @media (max-width: 1100px) {
+    .header-container {
+      gap: 20px;
+    }
+
+    .main-navigation {
+      justify-content: flex-start;
+      gap: 18px;
+    }
+  }
+
+  @media (max-width: 650px) {
+    .header-container {
+      min-height: 68px;
+      padding: 0 5%;
+      gap: 16px;
+    }
+
+    .brand-name {
+      font-size: 1.55rem;
+    }
+
+    .brand-subtitle {
+      font-size: 0.45rem;
+    }
+
+    .main-navigation {
+      gap: 16px;
+    }
+
+    .nav-link {
+      font-size: 0.7rem;
+      padding: 25px 0;
+    }
+
+    .nav-link::after {
+      bottom: 17px;
+    }
+
+    .listen-button {
+      padding: 9px 11px;
+      font-size: 0.72rem;
+    }
+  }
+</style>

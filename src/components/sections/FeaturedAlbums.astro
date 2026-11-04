@@ -1,0 +1,90 @@
+---
+import AlbumCard from "../cards/AlbumCard.astro";
+import SectionTitle from "../ui/SectionTitle.astro";
+
+interface AlbumApi {
+  id: number;
+  titulo: string;
+  descripcion: string | null;
+  fecha_publicacion: string | null;
+  portada: string | null;
+}
+
+// Definimos la estructura del objeto ya mapeado para evitar el tipo `any`
+interface AlbumCardProps {
+  name: string;
+  year: number | string;
+  image: string | null;
+  description: string;
+}
+
+let albums: AlbumCardProps[] = [];
+
+try {
+  const respuesta = await fetch("http://localhost:4321/api/albums");
+
+  if (!respuesta.ok) {
+    throw new Error(`Error al consultar álbumes: ${respuesta.status}`);
+  }
+
+  const albumsApi: AlbumApi[] = await respuesta.json();
+
+  albums = albumsApi.map((album) => ({
+    name: album.titulo,
+    year: album.fecha_publicacion
+      ? new Date(album.fecha_publicacion).getUTCFullYear()
+      : "—",
+    image: album.portada,
+    description: album.descripcion ?? "Descubrí este álbum de Muse.",
+  }));
+} catch (error) {
+  console.error("No se pudieron cargar los álbumes:", error);
+}
+---
+
+<section class="section container" id="discografia">
+  <SectionTitle
+    eyebrow="El sonido de Muse"
+    title="Discografía"
+    description="Explorá los álbumes que marcaron la historia musical de Muse."
+  />
+
+  {albums.length > 0 ? (
+    <div class="albums-grid">
+      {albums.map((album) => (
+        <AlbumCard {...album} />
+      ))}
+    </div>
+  ) : (
+    <p class="albums-message">
+      No se pudieron cargar los álbumes en este momento.
+    </p>
+  )}
+</section>
+
+<style>
+  .albums-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 28px;
+    margin-top: 40px;
+  }
+
+  .albums-message {
+    margin-top: 32px;
+    color: #a3a3a3;
+    text-align: center;
+  }
+
+  @media (max-width: 900px) {
+    .albums-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (max-width: 600px) {
+    .albums-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
