@@ -1,0 +1,307 @@
+
+---
+interface Concierto {
+  id: number;
+  nombre: string;
+  lugar: string;
+  fecha: string;
+  descripcion: string;
+}
+
+interface Multimedia {
+  id: number;
+  titulo: string;
+  descripcion: string | null;
+  url: string;
+  tipo: 'IMAGEN' | 'VIDEO';
+}
+
+let conciertos: Concierto[] = [];
+let galeria: Multimedia[] = [];
+
+try {
+  const [conciertosResponse, galeriaResponse] = await Promise.all([
+    fetch('http://localhost:4321/api/conciertos'),
+    fetch('http://localhost:4321/api/galeria')
+  ]);
+
+  if (conciertosResponse.ok) {
+    conciertos = await conciertosResponse.json();
+  }
+
+  if (galeriaResponse.ok) {
+    galeria = await galeriaResponse.json();
+  }
+} catch (error) {
+  console.error('Error al cargar las novedades:', error);
+}
+
+// Buscamos el próximo concierto.
+const ahora = new Date();
+
+const proximoConcierto = conciertos
+  .filter((concierto) => new Date(concierto.fecha) >= ahora)
+  .sort(
+    (a, b) =>
+      new Date(a.fecha).getTime() - new Date(b.fecha).getTime()
+  )[0];
+
+// Tomamos un contenido de la galería.
+const contenidoDestacado = galeria[0];
+
+// Formateamos la fecha evitando desfases de zona horaria.
+const formatearFecha = (fecha: string) => {
+  const [anio, mes, dia] = fecha.slice(0, 10).split('-').map(Number);
+
+  return new Date(anio, mes - 1, dia).toLocaleDateString('es-AR', {
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric'
+  });
+};
+---
+
+<section id="novedades" class="news-section">
+  <div class="section-header">
+    <span class="section-label">LO ÚLTIMO</span>
+    <h2>Novedades</h2>
+    <p>Descubrí las próximas fechas y los contenidos más destacados de Muse.</p>
+  </div>
+
+  <div class="news-grid">
+    <!-- Próximo concierto -->
+    <article class="news-card concert-news">
+      <div class="news-content">
+        <span class="news-category">PRÓXIMO SHOW</span>
+
+        {proximoConcierto ? (
+          <>
+            <h3>{proximoConcierto.nombre}</h3>
+
+            <p class="news-description">
+              {proximoConcierto.descripcion}
+            </p>
+
+            <div class="concert-details">
+              <span>
+                <span class="detail-label">FECHA</span>
+                {formatearFecha(proximoConcierto.fecha)}
+              </span>
+
+              <span>
+                <span class="detail-label">LUGAR</span>
+                {proximoConcierto.lugar}
+              </span>
+            </div>
+
+            <a href="/#conciertos" class="news-link">
+              Ver todos los conciertos <span aria-hidden="true">→</span>
+            </a>
+          </>
+        ) : (
+          <p class="empty-message">
+            No hay próximos conciertos disponibles por el momento.
+          </p>
+        )}
+      </div>
+    </article>
+
+    <!-- Contenido destacado -->
+    <article class="news-card media-news">
+      {contenidoDestacado ? (
+        <>
+          <div class="media-preview">
+            {contenidoDestacado.tipo === 'IMAGEN' ? (
+              <img
+                src={contenidoDestacado.url}
+                alt={contenidoDestacado.titulo}
+                loading="lazy"
+              />
+            ) : (
+              <iframe
+                src={contenidoDestacado.url}
+                title={contenidoDestacado.titulo}
+                loading="lazy"
+                allowfullscreen
+              />
+            )}
+          </div>
+
+          <div class="media-content">
+            <span class="news-category">CONTENIDO DESTACADO</span>
+            <h3>{contenidoDestacado.titulo}</h3>
+
+            {contenidoDestacado.descripcion && (
+              <p class="news-description">
+                {contenidoDestacado.descripcion}
+              </p>
+            )}
+
+            <a href="/#galeria" class="news-link">
+              Explorar galería <span aria-hidden="true">→</span>
+            </a>
+          </div>
+        </>
+      ) : (
+        <div class="media-content">
+          <span class="news-category">CONTENIDO DESTACADO</span>
+          <p class="empty-message">
+            No hay contenido disponible en la galería.
+          </p>
+        </div>
+      )}
+    </article>
+  </div>
+</section>
+
+<style>
+  .news-section {
+    padding: 100px 6%;
+    background: #090909;
+    color: #f5f5f5;
+  }
+
+  .section-header {
+    max-width: 1200px;
+    margin: 0 auto 45px;
+  }
+
+  .section-label,
+  .news-category {
+    display: block;
+    color: #e31b23;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 2px;
+    margin-bottom: 14px;
+  }
+
+  .section-header h2 {
+    font-size: clamp(2rem, 5vw, 3.2rem);
+    margin: 0 0 12px;
+  }
+
+  .section-header p,
+  .news-description {
+    color: #a3a3a3;
+    line-height: 1.7;
+  }
+
+  .news-grid {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 24px;
+  }
+
+  .news-card {
+    min-width: 0;
+    background: #141414;
+    border: 1px solid #292929;
+    border-radius: 12px;
+    overflow: hidden;
+    transition: border-color 0.25s ease;
+  }
+
+  .news-card:hover {
+    border-color: #e31b23;
+  }
+
+  .concert-news {
+    display: flex;
+    align-items: center;
+    min-height: 350px;
+    padding: 38px;
+    background:
+      radial-gradient(
+        circle at top right,
+        rgba(16, 27, 45, 0.9),
+        transparent 65%
+      ),
+      #141414;
+  }
+
+  .news-content {
+    width: 100%;
+  }
+
+  .news-card h3 {
+    font-size: 1.5rem;
+    margin: 0 0 14px;
+    line-height: 1.3;
+  }
+
+  .concert-details {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin: 28px 0;
+    color: #f5f5f5;
+  }
+
+  .concert-details span {
+    line-height: 1.5;
+  }
+
+  .detail-label {
+    display: block;
+    color: #8da9cc;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+    margin-bottom: 4px;
+  }
+
+  .media-preview {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    background: #101b2d;
+  }
+
+  .media-preview img,
+  .media-preview iframe {
+    width: 100%;
+    height: 100%;
+    display: block;
+    object-fit: cover;
+    border: 0;
+  }
+
+  .media-content {
+    padding: 26px;
+  }
+
+  .news-link {
+    display: inline-block;
+    margin-top: 12px;
+    color: #f5f5f5;
+    text-decoration: none;
+    font-weight: 600;
+    transition: color 0.2s ease;
+  }
+
+  .news-link:hover {
+    color: #e31b23;
+  }
+
+  .empty-message {
+    color: #a3a3a3;
+    line-height: 1.7;
+  }
+
+  @media (max-width: 768px) {
+    .news-section {
+      padding: 70px 5%;
+    }
+
+    .news-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .concert-news {
+      min-height: auto;
+      padding: 28px;
+    }
+  }
+</style>

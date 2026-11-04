@@ -1,0 +1,276 @@
+
+---
+interface Multimedia {
+  id: number;
+  titulo: string;
+  descripcion: string | null;
+  url: string;
+  tipo: 'IMAGEN' | 'VIDEO';
+}
+
+let multimedia: Multimedia[] = [];
+let error = false;
+
+try {
+  const response = await fetch('http://localhost:4321/api/galeria');
+
+  if (!response.ok) {
+    throw new Error('No se pudo obtener la galería');
+  }
+
+  multimedia = await response.json();
+} catch (e) {
+  console.error('Error al cargar la galería:', e);
+  error = true;
+}
+
+const imagenes = multimedia.filter(item => item.tipo === 'IMAGEN');
+const videos = multimedia.filter(item => item.tipo === 'VIDEO');
+---
+
+<section class="gallery-section" id="galeria">
+  <div class="gallery-container">
+    <div class="gallery-heading">
+      <span class="section-eyebrow">UNIVERSO MUSE</span>
+      <h2>Galería multimedia</h2>
+      <p>
+        Imágenes, momentos y producciones audiovisuales que recorren
+        la identidad artística de Muse.
+      </p>
+    </div>
+
+    {error ? (
+      <p class="gallery-message">
+        No pudimos cargar el contenido multimedia.
+      </p>
+    ) : (
+      <>
+        <div class="gallery-subheading">
+          <h3>Galería fotográfica</h3>
+          <span>{imagenes.length} IMÁGENES</span>
+        </div>
+
+        {imagenes.length > 0 ? (
+          <div class="gallery-grid">
+            {imagenes.map((imagen) => (
+              <article class="gallery-card">
+                <div class="gallery-image">
+                  <img
+                    src={imagen.url}
+                    alt={imagen.descripcion || imagen.titulo}
+                    loading="lazy"
+                  />
+                </div>
+
+                <div class="gallery-info">
+                  <h4>{imagen.titulo}</h4>
+                  {imagen.descripcion && (
+                    <p>{imagen.descripcion}</p>
+                  )}
+                </div>
+              </article>
+            ))}
+          </div>
+        ) : (
+          <p class="gallery-message">No hay imágenes disponibles.</p>
+        )}
+
+        <div class="gallery-subheading video-heading">
+          <h3>Videos oficiales</h3>
+          <span>{videos.length} VIDEOS</span>
+        </div>
+
+        {videos.length > 0 ? (
+          <div class="video-grid">
+            {videos.map((video) => (
+              <article class="video-card">
+                <div class="video-frame">
+                  <iframe
+                    src={video.url}
+                    title={video.titulo}
+                    loading="lazy"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                    referrerpolicy="strict-origin-when-cross-origin"
+                    allowfullscreen
+                  ></iframe>
+                </div>
+
+                <div class="gallery-info">
+                  <h4>{video.titulo}</h4>
+                  {video.descripcion && (
+                    <p>{video.descripcion}</p>
+                  )}
+                </div>
+              </article>
+            ))}
+          </div>
+        ) : (
+          <p class="gallery-message">No hay videos disponibles.</p>
+        )}
+      </>
+    )}
+
+    <div class="gallery-footer">
+      {multimedia.length} CONTENIDOS MULTIMEDIA
+    </div>
+  </div>
+</section>
+
+<style>
+  .gallery-section {
+    padding: 100px 24px;
+    background: #101b2d;
+    color: #f5f5f5;
+  }
+
+  .gallery-container {
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .gallery-heading {
+    max-width: 650px;
+    margin-bottom: 55px;
+  }
+
+  .section-eyebrow {
+    color: #e31b23;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 3px;
+  }
+
+  .gallery-heading h2 {
+    margin: 16px 0;
+    font-size: clamp(2rem, 5vw, 3.5rem);
+  }
+
+  .gallery-heading p {
+    color: #a3a3a3;
+    line-height: 1.7;
+  }
+
+  .gallery-subheading {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 45px 0 25px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid rgb(141 169 204 / 25%);
+  }
+
+  .gallery-subheading h3 {
+    margin: 0;
+    font-size: 1.5rem;
+  }
+
+  .gallery-subheading span {
+    color: #e31b23;
+    font-size: 0.75rem;
+    letter-spacing: 2px;
+  }
+
+  .gallery-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+  }
+
+  .gallery-card,
+  .video-card {
+    overflow: hidden;
+    background: #141414;
+    border: 1px solid rgb(141 169 204 / 15%);
+    border-radius: 8px;
+  }
+
+  .gallery-image {
+    height: 260px;
+    overflow: hidden;
+  }
+
+  .gallery-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.4s ease;
+  }
+
+  .gallery-card:hover .gallery-image img {
+    transform: scale(1.05);
+  }
+
+  .gallery-info {
+    padding: 20px;
+  }
+
+  .gallery-info h4 {
+    margin: 0 0 10px;
+    font-size: 1rem;
+  }
+
+  .gallery-info p {
+    margin: 0;
+    color: #a3a3a3;
+    font-size: 0.85rem;
+    line-height: 1.6;
+  }
+
+  .video-heading {
+    margin-top: 80px;
+  }
+
+  .video-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 24px;
+  }
+
+  .video-frame {
+    position: relative;
+    aspect-ratio: 16 / 9;
+    background: #000;
+  }
+
+  .video-frame iframe {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    border: 0;
+  }
+
+  .gallery-footer {
+    margin-top: 35px;
+    color: #737373;
+    font-size: 0.75rem;
+    letter-spacing: 2px;
+    text-align: right;
+  }
+
+  .gallery-message {
+    padding: 30px 0;
+    color: #a3a3a3;
+  }
+
+  @media (max-width: 850px) {
+    .gallery-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (max-width: 550px) {
+    .gallery-section {
+      padding: 70px 20px;
+    }
+
+    .gallery-grid,
+    .video-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .gallery-image {
+      height: 230px;
+    }
+  }
+</style>

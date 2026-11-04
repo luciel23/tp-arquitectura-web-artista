@@ -3,37 +3,88 @@
 import MainLayout from "../layouts/MainLayout.astro";
 import FeaturedAlbums from "../components/sections/FeaturedAlbums.astro";
 import MusicPlayer from "../components/sections/MusicPlayer.astro";
+import Concerts from "../components/sections/Concerts.astro";
+import Gallery from "../components/sections/Gallery.astro";
+import Merchandising from "../components/sections/Merchandising.astro";
+import Biography from "../components/sections/Biography.astro";
+import Novedades from "../components/sections/Novedades.astro";
+import Community from "../components/sections/Community.astro";
+
+interface Multimedia {
+  id: number;
+  titulo: string;
+  descripcion: string | null;
+  url: string;
+  tipo: "IMAGEN" | "VIDEO";
+}
+
+let imagenConcepto: Multimedia | undefined;
+
+try {
+  const respuesta = await fetch("http://localhost:4321/api/galeria");
+
+  if (respuesta.ok) {
+    const galeria: Multimedia[] = await respuesta.json();
+
+    imagenConcepto = galeria.find(
+      (elemento) =>
+        elemento.tipo === "IMAGEN" &&
+        elemento.titulo.toLowerCase().includes("concepto")
+    );
+  }
+} catch (error) {
+  console.error("No se pudo cargar la imagen del inicio:", error);
+}
 ---
 
 <MainLayout
   title="Muse — Universo musical"
   description="Explorá la historia, la discografía y el universo musical de Muse."
 >
+  <!-- INICIO -->
   <section class="hero" id="inicio">
     <div class="container hero-content">
-      <p class="hero-kicker">Una experiencia para fans</p>
-      <h1>MUSE<span>UNIVERSE</span></h1>
-      <p class="hero-description">
-        Explorá la música, la historia y el universo creativo de una de las
-        bandas más reconocidas del rock alternativo.
-      </p>
+      <div class="hero-text">
+        <p class="hero-kicker">UNA EXPERIENCIA PARA FANS</p>
 
-      <div class="hero-actions">
-        <a class="button" href="#discografia">EXPLORAR DISCOS</a>
-        <a class="button button-secondary" href="#historia">CONOCER LA BANDA</a>
+        <h1>
+          MUSE<span>UNIVERSE</span>
+        </h1>
+
+        <p class="hero-description">
+          Explorá la música, la historia y el universo creativo de una de las
+          bandas más reconocidas del rock alternativo.
+        </p>
+
+        <div class="hero-actions">
+          <a class="button" href="#discografia">EXPLORAR DISCOS</a>
+          <a class="button button-secondary" href="#historia">
+            CONOCER LA BANDA
+          </a>
+        </div>
       </div>
+
+      {imagenConcepto && (
+        <div class="hero-image">
+          <img
+            src={imagenConcepto.url}
+            alt={imagenConcepto.titulo}
+            fetchpriority="high"
+          />
+        </div>
+      )}
     </div>
   </section>
-
   <FeaturedAlbums />
-
   <MusicPlayer />
-
+  <Biography />
   <section class="section container" id="historia">
     <div class="history-layout">
       <div>
-        <span class="section-label">Desde sus comienzos</span>
+        <span class="section-label">DESDE SUS COMIENZOS</span>
+
         <h2 class="section-title">Una historia de evolución</h2>
+
         <p class="section-description">
           Muse es una banda británica formada en Teignmouth, Devon, en 1994.
           Su propuesta combina rock alternativo con elementos electrónicos,
@@ -45,10 +96,12 @@ import MusicPlayer from "../components/sections/MusicPlayer.astro";
             <strong>1994 · Los comienzos</strong>
             <p>Se consolida la formación de la banda.</p>
           </div>
+
           <div class="timeline-item">
             <strong>2001 · Origin of Symmetry</strong>
             <p>El grupo amplía su identidad sonora y su alcance.</p>
           </div>
+
           <div class="timeline-item">
             <strong>2006 · Black Holes and Revelations</strong>
             <p>Una etapa clave en su proyección internacional.</p>
@@ -60,33 +113,229 @@ import MusicPlayer from "../components/sections/MusicPlayer.astro";
     </div>
   </section>
 
-  <section class="section section-dark" id="conciertos">
-    <div class="container">
-      <span class="section-label">En vivo</span>
-      <h2 class="section-title">Conciertos y giras</h2>
-      <p class="section-description">
-        Un espacio para consultar próximas presentaciones, fechas y lugares.
-        Los eventos se conectarán con los datos reales del proyecto.
-      </p>
-
-      <div class="concert-list">
-        <article class="concert-item">
-          <div>
-            <h3>Próximas presentaciones</h3>
-            <p>Las fechas se mostrarán cuando estén disponibles en el sistema.</p>
-          </div>
-          <a class="button button-secondary" href="#contacto">MÁS INFORMACIÓN</a>
-        </article>
-      </div>
-    </div>
-  </section>
+  <Concerts />
+  <Gallery />
+  <Merchandising />
+  <Novedades />
+  <Community />
 
   <section class="section container" id="contacto">
-    <span class="section-label">Seguí explorando</span>
+    <span class="section-label">SEGUÍ EXPLORANDO</span>
+
     <h2 class="section-title">El viaje continúa</h2>
+
     <p class="section-description">
       Este proyecto reúne información sobre la música, la historia y la
       actividad de Muse en una experiencia web.
     </p>
   </section>
 </MainLayout>
+
+<style>
+  .hero {
+    position: relative;
+    overflow: hidden;
+    min-height: 620px;
+    display: flex;
+    align-items: center;
+    background:
+      radial-gradient(
+        ellipse at 78% 45%,
+        rgba(29, 65, 105, 0.55),
+        transparent 48%
+      ),
+      radial-gradient(
+        ellipse at 10% 90%,
+        rgba(16, 27, 45, 0.95),
+        transparent 55%
+      ),
+      linear-gradient(120deg, #090909 15%, #101b2d 100%);
+  }
+
+  .hero-content {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    grid-template-columns: 1fr 1.1fr;
+    align-items: center;
+    gap: 35px;
+    padding-top: 65px;
+    padding-bottom: 65px;
+  }
+
+  .hero-text {
+    position: relative;
+    z-index: 2;
+    min-width: 0;
+  }
+
+  .hero-kicker {
+    color: #8da9cc;
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    margin-bottom: 22px;
+  }
+
+  .hero h1 {
+  margin: 24px 0;
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: clamp(5rem, 15vw, 12rem);
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  line-height: 0.75;
+  text-transform: uppercase;
+}
+
+.hero h1 span {
+  display: block;
+  color: transparent;
+  -webkit-text-stroke: 1px #f5f5f5;
+}
+
+  .hero-description {
+    max-width: 480px;
+    color: #c4cbd4;
+    line-height: 1.8;
+    font-size: 1.05rem;
+    margin: 30px 0;
+  }
+
+  .hero-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px;
+  }
+
+  .hero-image {
+    position: relative;
+    width: 100%;
+    height: 460px;
+    overflow: hidden;
+    border-radius: 45% 8px 8px 45%;
+    mask-image: linear-gradient(
+      to right,
+      transparent 0%,
+      black 20%,
+      black 85%,
+      transparent 100%
+    );
+    -webkit-mask-image: linear-gradient(
+      to right,
+      transparent 0%,
+      black 20%,
+      black 85%,
+      transparent 100%
+    );
+  }
+
+  .hero-image img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    filter: brightness(0.82) contrast(1.08);
+  }
+
+  /* HISTORIA */
+  .history-layout {
+    display: grid;
+    grid-template-columns: 1.2fr 0.8fr;
+    align-items: center;
+    gap: 60px;
+  }
+
+  .timeline {
+    margin-top: 35px;
+    border-left: 2px solid #e31b23;
+    padding-left: 25px;
+  }
+
+  .timeline-item {
+    position: relative;
+    margin-bottom: 28px;
+  }
+
+  .timeline-item::before {
+    content: "";
+    position: absolute;
+    left: -32px;
+    top: 5px;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: #e31b23;
+  }
+
+  .timeline-item strong {
+    color: #f5f5f5;
+    display: block;
+    margin-bottom: 8px;
+  }
+
+  .timeline-item p {
+    color: #a3a3a3;
+    line-height: 1.6;
+    margin: 0;
+  }
+
+  .history-visual {
+    min-height: 340px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: clamp(12rem, 25vw, 20rem);
+    font-weight: 900;
+    line-height: 1;
+    color: rgba(141, 169, 204, 0.12);
+    background: radial-gradient(
+      circle,
+      rgba(16, 27, 45, 0.9),
+      transparent 70%
+    );
+  }
+
+  @media (max-width: 768px) {
+    .hero {
+      min-height: auto;
+    }
+
+    .hero-content {
+      grid-template-columns: 1fr;
+      gap: 25px;
+      padding-top: 75px;
+      padding-bottom: 50px;
+    }
+
+    .hero-image {
+      height: 320px;
+      border-radius: 100px 8px 8px 100px;
+    }
+
+    .hero-actions {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+
+    .history-layout {
+      grid-template-columns: 1fr;
+      gap: 20px;
+    }
+
+    .history-visual {
+      min-height: 200px;
+      font-size: 12rem;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .hero-image {
+      height: 250px;
+    }
+
+    .hero h1 {
+      font-size: 3.5rem;
+    }
+  }
+</style>

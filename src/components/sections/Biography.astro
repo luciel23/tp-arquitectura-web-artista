@@ -1,0 +1,152 @@
+
+---
+interface Biografia {
+  id: number;
+  contenido: string;
+  imagen: string | null;
+  actualizado: string;
+}
+
+let biografia: Biografia | null = null;
+let error = false;
+
+try {
+  const response = await fetch('http://localhost:4321/api/biografia');
+
+  if (!response.ok) {
+    throw new Error('No se pudo obtener la biografía');
+  }
+
+  biografia = await response.json();
+} catch (e) {
+  console.error('Error al cargar la biografía:', e);
+  error = true;
+}
+---
+
+<section class="biography-section" id="biografia">
+  <div class="biography-container">
+    <div class="biography-heading">
+      <span class="section-eyebrow">CONOCÉ A LA BANDA</span>
+      <h2>La esencia de Muse</h2>
+    </div>
+
+    {error ? (
+      <p class="biography-message">
+        No pudimos cargar la biografía en este momento.
+      </p>
+    ) : biografia ? (
+      <div class="biography-layout">
+        {biografia.imagen && (
+          <div class="biography-image">
+            <img
+              src={biografia.imagen}
+              alt="Imagen representativa de Muse"
+              loading="lazy"
+            />
+            <span class="image-caption">MUSE · DESDE 1994</span>
+          </div>
+        )}
+
+        <div class="biography-content">
+          {biografia.contenido.split('\n').filter(parrafo => parrafo.trim()).map((parrafo) => (
+            <p>{parrafo}</p>
+          ))}
+        </div>
+      </div>
+    ) : (
+      <p class="biography-message">
+        No hay información biográfica disponible.
+      </p>
+    )}
+  </div>
+</section>
+
+<style>
+  .biography-section {
+    padding: 110px 24px;
+    background: #101b2d;
+    color: #f5f5f5;
+  }
+
+  .biography-container {
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .biography-heading {
+    margin-bottom: 55px;
+  }
+
+  .section-eyebrow {
+    color: #e31b23;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 3px;
+  }
+
+  .biography-heading h2 {
+    margin: 16px 0 0;
+    font-size: clamp(2rem, 5vw, 3.5rem);
+  }
+
+  .biography-layout {
+    display: grid;
+    grid-template-columns: 0.9fr 1.1fr;
+    gap: 65px;
+    align-items: start;
+  }
+
+  .biography-image {
+    position: sticky;
+    top: 110px;
+  }
+
+  .biography-image img {
+    display: block;
+    width: 100%;
+    max-height: 600px;
+    object-fit: cover;
+    border-radius: 8px;
+  }
+
+  .image-caption {
+    display: block;
+    margin-top: 15px;
+    color: #8da9cc;
+    font-size: 0.75rem;
+    letter-spacing: 2px;
+  }
+
+  .biography-content p {
+    margin: 0 0 25px;
+    color: #c5cbd4;
+    font-size: 1rem;
+    line-height: 1.9;
+    text-align: justify;
+  }
+
+  .biography-message {
+    color: #a3a3a3;
+    padding: 30px 0;
+  }
+
+  @media (max-width: 800px) {
+    .biography-section {
+      padding: 75px 20px;
+    }
+
+    .biography-layout {
+      grid-template-columns: 1fr;
+      gap: 35px;
+    }
+
+    .biography-image {
+      position: static;
+    }
+
+    .biography-image img {
+      max-height: 400px;
+    }
+  }
+</style>
