@@ -155,8 +155,17 @@ img {
   min-height: min(760px, 85vh);
   overflow: hidden;
   background:
-    radial-gradient(ellipse at 75% 40%, rgb(160 14 25 / 35%), transparent 38%),
-    linear-gradient(110deg, #090909 25%, #190b0d 70%, #090909);
+     radial-gradient(
+    ellipse at 75% 40%,
+    rgb(35 59 92 / 38%),
+    transparent 45%
+  ),
+  linear-gradient(
+    110deg,
+    #090909 25%,
+    #101b2d 70%,
+    #090909
+  );
 }
 
 .hero::after {
@@ -392,4 +401,41 @@ img {
     align-items: flex-start;
     flex-direction: column;
   }
+  .site-header {
+  background: rgb(9 9 9 / 92%);
+  border-bottom: 1px solid rgb(141 169 204 / 15%);
+  backdrop-filter: blur(12px);
+}
+
+.main-nav a {
+  transition: color 0.3s ease;
+}
+
+.main-nav a:hover {
+  color: #8da9cc;
+}
+
+.brand-dot {
+  color: var(--color-accent);
+}
+
+.header-cta {
+  transition: background 0.3s ease, border-color 0.3s ease;
+}
+
+.header-cta:hover {
+  border-color: #8da9cc;
+}
+
+.site-footer {
+  border-top: 1px solid rgb(141 169 204 / 20%);
+}
+
+.footer-brand {
+  color: var(--color-text);
+}
+
+.footer-copy {
+  color: var(--color-muted);
+ }
 }

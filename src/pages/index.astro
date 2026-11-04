@@ -2,6 +2,7 @@
 ---
 import MainLayout from "../layouts/MainLayout.astro";
 import FeaturedAlbums from "../components/sections/FeaturedAlbums.astro";
+import MusicPlayer from "../components/sections/MusicPlayer.astro";
 ---
 
 <MainLayout
@@ -26,19 +27,7 @@ import FeaturedAlbums from "../components/sections/FeaturedAlbums.astro";
 
   <FeaturedAlbums />
 
-  <section class="section section-dark" id="musica">
-    <div class="container">
-      <span class="section-label">Escuchá y descubrí</span>
-      <h2 class="section-title">El universo sonoro</h2>
-      <p class="section-description">
-        Un espacio dedicado a las canciones, los álbumes y los sonidos que
-        definen la identidad musical de Muse.
-      </p>
-      <p class="section-description">
-        Próximamente: reproductor musical con selección de canciones.
-      </p>
-    </div>
-  </section>
+  <MusicPlayer />
 
   <section class="section container" id="historia">
     <div class="history-layout">
