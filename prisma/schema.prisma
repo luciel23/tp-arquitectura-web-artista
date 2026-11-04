@@ -47,3 +47,26 @@ model Concierto {
   fecha       DateTime
   descripcion String?
 }
+
+
+model Producto {
+  id          Int      @id @default(autoincrement())
+  nombre      String
+  descripcion String?
+  precio      Decimal? @db.Decimal(10, 2)
+  imagen      String?
+  categoria   String?
+}
+
+model Multimedia {
+  id          Int            @id @default(autoincrement())
+  titulo      String
+  descripcion String?
+  url         String
+  tipo        TipoMultimedia
+}
+
+enum TipoMultimedia {
+  IMAGEN
+  VIDEO
+}

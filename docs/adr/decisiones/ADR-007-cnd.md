@@ -1,4 +1,4 @@
-# ADR-002 – Distribución de recursos estáticos mediante CDN
+# ADR-007 – Distribución de recursos estáticos mediante CDN
 
 ## Contexto
 El portfolio musical incluirá recursos estáticos, como imágenes de portadas de álbumes, fotografías del artista y posiblemente otros elementos multimedia.

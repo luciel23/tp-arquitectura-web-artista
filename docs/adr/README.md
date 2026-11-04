@@ -15,5 +15,9 @@ Este directorio contiene las decisiones arquitectónicas del proyecto Portfolio 
 - [ADR-003 – Uso de Prisma como ORM](decisiones/ADR-003-prisma-orm.md)
 - [ADR-004 – Ausencia de panel de administración](decisiones/ADR-004-sin-panel-admin.md)
 - [ADR-005 – Renderizado en servidor y adaptador de Node.js](decisiones/ADR-005-ssr-nodejs.md)
-- [ADR-006– Uso de migraciones con Prisma](decisiones/ADR-006-migraciones.md)
-- [ADR-002 – Distribución de recursos estáticos mediante CDN](decisiones/ADR-007-cnd.md)
+- [ADR-006 – Uso de migraciones con Prisma](decisiones/ADR-006-migraciones.md)
+- [ADR-007 – Distribución de recursos estáticos mediante CDN](decisiones/ADR-007-cnd.md)
+- [ADR-008 - ImportacionDatosCmv](decisiones/ADR-008-ImportacionDatosCmv.md)
+- [ADR-009 - DespliegueDocker](decisiones/ADR-009-DespliegueDocker.md)
+- [ADR-010 - Arquitectura modular del backend y separación de responsabilidades](decisiones/ADR-010-backend-modular.md)
+
